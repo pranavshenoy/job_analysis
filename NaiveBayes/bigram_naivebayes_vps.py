@@ -56,10 +56,10 @@ print 'completed training dataset'
 
 print 'started computing accuracy'
 #accuracy
-nltk.classify.accuracy(classifier, test_set)
+accuracy=nltk.classify.accuracy(classifier, test_set)
 #save accuracy
 with open('accuracy_bigram_model','w') as f:
-    pickle.dump(classifier,f)
+    pickle.dump(accuracy,f)
 print 'completed computing accuracy'
 
 
