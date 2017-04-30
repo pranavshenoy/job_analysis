@@ -43,6 +43,7 @@ vocab=[ps.stem(word) for word in vocab]   #stemming
 #    json.dump(vocab,f)
 labeled_data=to_unigram(labeled_data)    #converting to unigram    
 
+print 'Dataset ready'
 def extract_features(dataset):       #features are bag of words. document is a list of words of a sentence 
     feature_vector=[]
     labels=[]
@@ -57,10 +58,11 @@ def extract_features(dataset):       #features are bag of words. document is a l
     return {'feature':feature_vector,'labels':labels}        
 
 features=extract_features(labeled_data)
-
+print 'feature extraction completed'
 classifier=svm.SVC()
 classifier.fit(features['feature'],features['labels'])
 with open('svc_unigram_model','w') as f:
     pickle.dump(classifier,f) 
+print 'training completed'
 
                
