@@ -46,9 +46,9 @@ print 'training completed'
 
 print 'Accuracy Computing started'
 predicted = classifier.predict(features[35000:40000])
-accuracy=classifier.accuracy_score(labels[35000:40000],predicted)
+accuracy=accuracy_score(labels[35000:40000],predicted)
 with open('accuracy_svc_unigram','w') as f:
-    pickle.dump(classifier,f) 
+    pickle.dump(accuracy,f) 
 print 'Accuracy Computing completed'
 
 
