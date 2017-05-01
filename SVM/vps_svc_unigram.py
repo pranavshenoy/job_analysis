@@ -1,10 +1,8 @@
-import nltk
 import random
 import os
 from sklearn import svm
 import json
-from nltk.stem import  PorterStemmer
-import random
+from sklearn.feature_extraction.text import CountVectorizer
 import pickle
 
 label_map={'neg':0 ,'sli_neg':1 ,'neutral':2 ,'sli_pos':3 ,'pos':4}
@@ -20,47 +18,19 @@ def load_dataset():
                     dataset+=[(sentence,label_map[each_file]) for sentence in data_temp]
     return dataset
 
-#initialising porterstemmer
-ps=PorterStemmer()
-
-def to_unigram(data):
-    dataset=[]
-    dataset+=[([items for items in sentence.split()],polarity) for sentence,polarity in data]    
-    return dataset    
-
-def get_words(x):    #returns all the words in the  data set
-    vocab = []
-    for sentence,polarity in x:  
-        vocab.extend(sentence.split())
-    return vocab
-
 #execution
 labeled_data=load_dataset()    #loading labeled sentences
 random.shuffle(labeled_data)
-vocab=set(get_words(labeled_data)) #getting words 
-vocab=[ps.stem(word) for word in vocab]   #stemming
-#with open('vocab_unigram','w') as f:
-#    json.dump(vocab,f)
-labeled_data=to_unigram(labeled_data)    #converting to unigram    
 
 print 'Dataset ready'
-def extract_features(dataset):       #features are bag of words. document is a list of words of a sentence 
-    feature_vector=[]
-    labels=[]
-    for sentence,label in dataset:
-        features = {}
-        labels.append(label)
-        for word in vocab:
-            features[word] = 0
-            if word in sentence:
-                features[word] = 1
-        feature_vector.append(features.values())        
-    return {'feature':feature_vector,'labels':labels}        
+vectorizer = CountVectorizer(min_df=1)
+corpus=[sentence for sentence,pol in labeled_data]
+features=vectorizer.fit_transform(corpus[:50000])
+labels=[label for sentence,label in labeled_data[:50000]]
 
-features=extract_features(labeled_data)
 print 'feature extraction completed'
 classifier=svm.SVC()
-classifier.fit(features['feature'],features['labels'])
+classifier.fit(features,labels)
 with open('svc_unigram_model','w') as f:
     pickle.dump(classifier,f) 
 print 'training completed'
