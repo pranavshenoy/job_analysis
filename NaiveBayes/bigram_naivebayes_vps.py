@@ -45,13 +45,13 @@ def extract_features(document):       #each sentences contains a list of words a
 train_test = nltk.classify.apply_features(extract_features, labeled_data)
 
 train_set=train_test[:-10000]
-test_set=train_test[-10000:]
+test_set=train_test[-2000:]
 
 print 'started training dataset'
-classifier = nltk.NaiveBayesClassifier.train(train_set)
+#classifier = nltk.NaiveBayesClassifier.train(train_set)
 #save  the model
-with open('naive_bayes_bigram_model','w') as f:
-    pickle.dump(classifier,f)
+with open('naive_bayes_bigram_model') as f:
+    classifier=pickle.load(f)
 print 'completed training dataset'
 
 print 'started computing accuracy'
