@@ -17,9 +17,6 @@ def load_dataset():
                     dataset+=[(sentence,each_file) for sentence in data_temp]
     return dataset
 
-#initialising porterstemmer
-ps=PorterStemmer()
-
 def to_unigram(data):
     dataset=[]
     dataset+=[([items for items in sentence.split()],polarity) for sentence,polarity in data]    
@@ -34,11 +31,9 @@ def get_words(x):    #returns all the words in the  data set
 #execution
 labeled_data=load_dataset()    #loading labeled sentences
 random.shuffle(labeled_data)
-vocab=set(get_words(labeled_data)) #getting words 
-vocab=set([ps.stem(word) for word in vocab])   #stemming
-#with open('vocab_unigram','w') as f:
-#    json.dump(vocab,f)
-#labeled_data=to_unigram(labeled_data)    #converting to unigram
+with open('vocab_unigram') as f:
+    vocab=json.load(f)
+labeled_data=to_unigram(labeled_data)    #converting to unigram            
 
 def extract_features(document):       #features are bag of words. document is a list of words of a sentence 
     features = {}
@@ -50,13 +45,19 @@ train_test = nltk.classify.apply_features(extract_features, labeled_data)
 
 #dividing into training and test data
 train_set=train_test[:-10000]
-test_set=train_test[-2000:]
+test_set=train_test[-5000:]
+print 'training started'    
+
+classifier = nltk.NaiveBayesClassifier.train(train_set)
+with open('naive_bayes_unigram_model','w') as f:
+    pickle.dump(classifier,f)
+print 'training  completed'    
 
 with open('naive_bayes_unigram_model') as f:
     classifier=pickle.load(f)
-
+print 'Accuracy started'    
 accuracy=nltk.classify.accuracy(classifier, test_set)
+with open('accuracy_unigram','w') as f:
+    json.dump(accuracy,f)        
 
-with open('accuracy_unigram_model','w') as f:
-    pickle.dump(accuracy,f)   
-                
+print 'Accuracy completed'    
