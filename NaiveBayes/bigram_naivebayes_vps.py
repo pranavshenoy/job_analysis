@@ -48,7 +48,7 @@ train_set=train_test[:-10000]
 test_set=train_test[-2000:]
 
 print 'started training dataset'
-#classifier = nltk.NaiveBayesClassifier.train(train_set)
+classifier = nltk.NaiveBayesClassifier.train(train_set)
 #save  the model
 with open('naive_bayes_bigram_model') as f:
     classifier=pickle.load(f)
@@ -59,7 +59,7 @@ print 'started computing accuracy'
 accuracy=nltk.classify.accuracy(classifier, test_set)
 #save accuracy
 with open('accuracy_bigram_model','w') as f:
-    pickle.dump(accuracy,f)
+    json.dump(accuracy,f)
 print 'completed computing accuracy'
 
 
